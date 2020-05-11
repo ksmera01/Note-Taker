@@ -4,8 +4,6 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = function (app) {
 
-    // let noteLibrary = [];
-
     app.get("/api/notes", function (req, res) {
         return res.json(JSON.parse(fs.readFileSync("./db/db.json", "utf8")));
         // console.log(noteLibrary);
@@ -14,10 +12,17 @@ module.exports = function (app) {
 
     app.post("/api/notes", function (req, res) {
         let addNote = req.body;
-        console.log(addNote);
+        // console.log(addNote);
         addNote.id = uuidv4();
-        fs.writeFile("./db/db.json", "utf8");
-        JSON.parse(noteLibrary.push(addNote));
+        // console.log(addNote.id);
+        noteLibrary = (JSON.parse(fs.readFileSync("./db/db.json", "utf8")))
+        // console.log(noteLibrary)
+        noteLibrary.push(addNote);
+        // console.log(noteLibrary)
+        fs.writeFileSync("./db/db.json", JSON.stringify(noteLibrary));
+        res.json(noteLibrary)
+        // console.log(res.json(noteLibrary))
+
     })
 
 
