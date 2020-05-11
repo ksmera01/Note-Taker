@@ -4,12 +4,13 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = function (app) {
 
+    //Checks for existing notes
     app.get("/api/notes", function (req, res) {
-        return res.json(JSON.parse(fs.readFileSync("./db/db.json", "utf8")));
+        noteLibrary = res.json(JSON.parse(fs.readFileSync("./db/db.json", "utf8")));
         // console.log(noteLibrary);
-        // res.json(noteLibrary);
     })
 
+    //Post request for new notes
     app.post("/api/notes", function (req, res) {
         let addNote = req.body;
         // console.log(addNote);
@@ -18,15 +19,28 @@ module.exports = function (app) {
         noteLibrary = (JSON.parse(fs.readFileSync("./db/db.json", "utf8")))
         // console.log(noteLibrary)
         noteLibrary.push(addNote);
-        // console.log(noteLibrary)
         fs.writeFileSync("./db/db.json", JSON.stringify(noteLibrary));
         res.json(noteLibrary)
         // console.log(res.json(noteLibrary))
 
     })
 
-
-    // app.delete("/api/notes/:id", function (req, res) {
-
-    // })
+    //Delete request for existing notes
+    app.delete("/api/notes/:id", function (req, res) {
+        noteLibrary = (JSON.parse(fs.readFileSync("./db/db.json", "utf8")))
+        // console.log(req);
+        // console.log(req.params);
+        savedNoteID = req.params.id
+        // console.log(savedNoteID);
+        for (let i = 0; i < noteLibrary.length; i++) {
+            if (savedNoteID === noteLibrary[i].id) {
+                console.log("success");
+                noteLibrary.splice(i, 1);
+            }
+            // console.log(noteLibrary[i]);
+            // console.log(noteLibrary[i].id)
+            fs.writeFileSync("./db/db.json", JSON.stringify(noteLibrary));
+            res.json(noteLibrary)
+        }
+    })
 }
